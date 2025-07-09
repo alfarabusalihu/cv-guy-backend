@@ -1,7 +1,6 @@
 require('dotenv').config();
 const cors = require('cors');
 var express = require('express');
-var path = require('path');
 var app = express();
 const loadResume=require ('./controllers/cv.parser')
 const chatRoute=require("./routes/chat.route")
@@ -14,12 +13,12 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
 }));
-
-// view engine setup
-// app.set('views', path.join(__dirname, 'views'));
 loadResume().then(()=>console.log("Resume loaded and parsed successfully"))
 
 app.use(express.json());
+app.get('/', (req, res) => {
+  res.send('CV-Guy backend is running!');
+});
 app.use("/api/chat",chatRoute)
 app.use("/api/email",emailRoute)
 

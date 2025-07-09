@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
 app.use("/api/chat",chatRoute)
 app.use("/api/email",emailRoute)
 
-const port=process.env.PORT|3001
+const port=process.env.PORT||3001
 app.listen(port,()=>{
   console.log(`server is running on http://localhost:${port}`)
 }

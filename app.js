@@ -9,7 +9,7 @@ const emailRoute=require("./routes/email.route")
 
 // ✅ Allow requests from frontend
 app.use(cors({
-  origin: 'https://cv-guy-alfars-projects-364a919f.vercel.app', // replace with your frontend URL
+  origin: 'https://cv-guy.vercel.app/', // replace with your frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
 }));

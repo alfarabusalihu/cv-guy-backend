@@ -6,16 +6,24 @@ const loadResume=require ('./controllers/cv.parser')
 const chatRoute=require("./routes/chat.route")
 const emailRoute=require("./routes/email.route")
 
+const allowedOrigins = [
+  'https://cv-lm66erbw7-alfars-projects-364a919f.vercel.app',
+  'https://cv-guy.vercel.app'
+];
 
-// ✅ Allow requests from frontend
-app.use(cors({
-    origin: [
-    'https://cv-guy.vercel.app', 
-    'https://cv-7inf193zw-alfars-projects-364a919f.vercel.app'
-  ],
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
-}));
+};
+
+app.use(cors(corsOptions));
 loadResume().then(()=>console.log("Resume loaded and parsed successfully"))
 
 app.use(express.json());

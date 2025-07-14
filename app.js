@@ -23,7 +23,8 @@ const corsOptions = {
   credentials: true,
 };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+app.use(cors())
 loadResume().then(()=>console.log("Resume loaded and parsed successfully"))
 
 app.use(express.json());

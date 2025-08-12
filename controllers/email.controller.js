@@ -1,34 +1,36 @@
 const nodemailer=require("nodemailer");
+const fs = require('fs');
+const Cv = require('../models/cv.model');
 
-exports.sendEmail=async(req,res)=>{
-    const {to,subject,body}=req.body;
+exports.sendEmail = async (req, res) => {
+  try {
+    const {subject, body } = req.body;
 
-    try{
-       const transporter=nodemailer.createTransport(
-        {
-            host:process.env.SMTP_HOST,
-            port:587,
-            secure:false,
-            auth:{
-                user:process.env.SMTP_USER,
-                pass:process.env.SMTP_PASS
-            }
-            
-        }
-    ) 
-    await transporter.sendMail(
-        {
-            from:`"MCP Server",<${process.env.SMTP_USER}>`,
-            to:to,
-            subject:subject,
-            text:body,
-        }
-    )
-    res.json({success:true,message:"Email Sent"})
-    }
-    catch(err){
-        res.status(500).json({error:err.message})
+    const cv = await Cv.findOne().sort({ uploadedAt: -1 });
+
+    if (!cv || !cv.email) {
+      return res.status(404).json({ error: 'No CV or email found' });
     }
 
-}
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
+      }
+    });
+
+    await transporter.sendMail({
+      from: process.env.SMTP_USER, 
+      to: cv.email,
+      subject,
+      text: body
+    });
+
+    res.json({ message: 'Email sent successfully' });
+  } catch (err) {
+    console.error('Error sending email:', err);
+    res.status(500).json({ error: 'Failed to send email' });
+  }
+};
 

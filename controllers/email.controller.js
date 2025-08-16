@@ -6,7 +6,7 @@ exports.sendEmail = async (req, res) => {
   try {
     const {subject, body } = req.body;
 
-    const cv = await Cv.findOne().sort({ uploadedAt: -1 });
+    const cv =  await Cv.findById(cvId);
 
     if (!cv || !cv.email) {
       return res.status(404).json({ error: 'No CV or email found' });

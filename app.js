@@ -3,7 +3,6 @@ const cors = require('cors');
 var express = require('express');
 var app = express();
 const mongo=require('mongoose')
-// const loadResume=require ('./controllers/cv.parser')
 const cvRoute=require("./routes/cv.route")
 const chatRoute=require("./routes/chat.route")
 const emailRoute=require("./routes/email.route")
@@ -13,6 +12,7 @@ mongo.connect(process.env.MONGODB_URI,{
 });
 
 const allowedOrigins = [
+  'http://localhost:3000',
   'https://cv-lm66erbw7-alfars-projects-364a919f.vercel.app',
   'https://cv-guy.vercel.app'
 ];
@@ -29,15 +29,15 @@ const corsOptions = {
   credentials: true,
 };
 
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 app.use(cors())
-// loadResume().then(()=>console.log("Resume loaded and parsed successfully"))
+
 
 app.use(express.json());
 app.get('/', (req, res) => {
   res.send('CV-Guy backend is running!');
 });
-app.use('/api/uploadcv', cvRoute);
+app.use('/api/cv', cvRoute);
 app.use("/api/chat",chatRoute)
 app.use("/api/email",emailRoute)
 

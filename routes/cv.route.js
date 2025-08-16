@@ -27,32 +27,21 @@ router.post('/', upload.single('cv'), async (req, res) => {
       fileName: req.file.originalname,
       content: req.file.buffer,
       contentType: req.file.mimetype,
+      uploadedAt: new Date(),
       email
     });
 
     await cv.save();
-    res.status(200).json({ message: 'CV uploaded successfully', email });
+    res.status(200).json({ message: 'CV uploaded successfully', email, cvId: cv._id });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Upload failed' });
   }
 });
 
-router.get('/latest', async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
-    const latestCv = await Cv.findOne().sort({ uploadedAt: -1 });
-    if (!latestCv) {
-      return res.status(404).json({ error: 'No CV found' });
-    }
-    res.status(200).json(latestCv);
-  } catch (err) {
-    res.status(500).json({ error: 'Could not fetch CV' });
-  }
-});
-
-router.delete('/delete', async (req, res) => {
-  try {
-    await Cv.deleteMany();
+    await Cv.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: 'CV deleted' });
   } catch (err) {
     res.status(500).json({ error: 'Deletion failed' });
